@@ -1,5 +1,6 @@
 {
     "name": "pxt-esp8266http",
+    "version": "1.0.0",
     "description": "",
     "dependencies": {
         "core": "*",
