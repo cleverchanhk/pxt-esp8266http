@@ -5,6 +5,10 @@ namespace ESP8266HTTP {
     let onResponseHandler: (data: string) => void = null;
 
     // Initialize UART and ESP8266
+    //% block="initialize ESP8266 TX %tx RX %rx at baud rate %baudRate"
+    //% tx.defl=SerialPin.P0
+    //% rx.defl=SerialPin.P1
+    //% baudRate.defl=115200
     export function initESP8266(tx: SerialPin, rx: SerialPin, baudRate: BaudRate): void {
         serial.redirect(tx, rx, baudRate);
         serial.onDataReceived(serial.delimiters(Delimiters.NewLine), () => {
@@ -61,7 +65,9 @@ namespace ESP8266HTTP {
     }
 
     // Connect to Wi-Fi
-    //% block="Connect to Wi-Fi SSID %ssid Password %pwd"
+    //% block="connect to WiFi SSID %ssid password %pwd"
+    //% ssid.defl="your_ssid"
+    //% pwd.defl="your_password"
     export function connectWifi(ssid: string, pwd: string): boolean {
         if (!sendATCommand("AT")) return false;
         if (!sendATCommand("AT+CWMODE=1")) return false;
@@ -69,7 +75,9 @@ namespace ESP8266HTTP {
     }
 
     // Send HTTP GET Request
-    //% block="HTTP GET URL %url || Handler %handler"
+    //% block="HTTP GET %url || then %handler"
+    //% url.defl="http://example.com"
+    //% handler.defl=null
     export function httpGet(url: string, handler?: (data: string) => void): boolean {
         // Clear previous response
         response = "";
@@ -98,5 +106,10 @@ namespace ESP8266HTTP {
 
         serial.writeString(request);
         return true;
+    }
+
+    //% block="on HTTP response"
+    export function onResponse(cb: (data: string) => void) {
+        onResponseHandler = cb;
     }
 }
